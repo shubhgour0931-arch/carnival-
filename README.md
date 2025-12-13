@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carnival Eventer – New Year Party Pass Booking</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <style>
+    body { margin:0; font-family:Arial, sans-serif; background:#f4f6f8; color:#333 }
+    header, footer { background:#6a1b9a; color:#fff; padding:20px }
+    nav a { color:#fff; margin-right:15px; text-decoration:none; font-weight:bold }
+    .hero { background:#f3e5f5; padding:40px; text-align:center }
+    .section { background:#fff; margin:20px; padding:30px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,.1) }
+    form { display:grid; gap:12px; max-width:500px }
+    input, select, button { padding:10px; font-size:16px }
+    button { background:#6a1b9a; color:#fff; border:none; border-radius:5px; cursor:pointer }
+    button:hover { background:#4a148c }
+    table { width:100%; border-collapse:collapse }
+    th, td { border:1px solid #ccc; padding:8px; text-align:center }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Carnival Eventer – New Year Party</h1>
+  <nav>
+    <a href="#book">Book Pass</a>
+    <a href="#admin">Admin</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>31st December New Year Bash</h2>
+  <p>Music • DJ • Celebration</p>
+</section>
+
+<section class="section" id="book">
+  <h2>Book Your Pass</h2>
+  <form id="bookingForm">
+    <input required placeholder="Full Name" />
+    <input required placeholder="Mobile Number" />
+
+    <select id="passType" required>
+      <option value="">Select Pass</option>
+      <option value="450">Single – ₹450</option>
+      <option value="850">Couple – ₹850</option>
+      <option value="2000">Group (5 Entry) – ₹2000</option>
+    </select>
+
+    <p id="amount">Total Amount: ₹0</p>
+    <button type="submit">Pay & Confirm</button>
+  </form>
+</section>
+
+<section class="section">
+  <h2>Your QR Pass</h2>
+  <div id="qrcode"></div>
+</section>
+
+<section class="section" id="admin">
+  <h2>Admin Panel (Live Bookings)</h2>
+
+  <div id="adminLogin">
+    <input type="password" id="adminPass" placeholder="Admin Password" />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <div id="adminArea" style="display:none">
+    <table>
+      <thead>
+        <tr><th>Booking ID</th><th>Amount</th><th>Status</th><th>Pass</th></tr>
+      </thead>
+      <tbody id="adminTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2025 Carnival Eventer</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  const passType = document.getElementById('passType');
+  const amountText = document.getElementById('amount');
+  const adminTable = document.getElementById('adminTable');
+  const adminLogin = document.getElementById('adminLogin');
+  const adminArea = document.getElementById('adminArea');
+
+  document.getElementById('loginBtn').onclick = () => {
+    if(document.getElementById('adminPass').value === 'admin123'){
+      adminLogin.style.display = 'none';
+      adminArea.style.display = 'block';
+    } else {
+      alert('Wrong password');
+    }
+  };
+
+  passType.addEventListener('change', () => {
+    amountText.textContent = 'Total Amount: ₹' + (passType.value || 0);
+  });
+
+  document.getElementById('bookingForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    if(!passType.value){ alert('Select pass type'); return; }
+
+    const amount = passType.value;
+    const bookingId = 'CAR-' + Math.floor(Math.random()*1000000);
+
+    const options = {
+      prefill: { name: 'Guest' },
+      key: 'RAZORPAY_KEY_HERE',
+      amount: amount * 100,
+      currency: 'INR',
+      name: 'Carnival Eventer',
+      description: 'New Year Party Pass',
+      handler: function(){
+        alert('Booking Confirmed!\nEvent: Carnival Eventer New Year Party\nBooking ID: ' + bookingId);
+
+        document.getElementById('qrcode').innerHTML = '';
+        new QRCode(document.getElementById('qrcode'), bookingId);
+
+        const msg = encodeURIComponent(
+          '🎉 Carnival Eventer – New Year Party 🎉\n' +
+          'Booking ID: ' + bookingId + '\n' +
+          'Amount Paid: ₹' + amount + '\n' +
+          'Show QR at entry'
+        );
+        window.open('https://wa.me/91XXXXXXXXXX?text=' + msg, '_blank');
+      }
+    };
+
+    new Razorpay(options).open();
+  });
+</script>
+
+</body>
+</html>
