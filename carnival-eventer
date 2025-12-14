@@ -20,8 +20,6 @@
     th, td { border:1px solid #ccc; padding:8px; text-align:center }
   </style>
 </head>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 <body>
 
 <header>
@@ -51,8 +49,7 @@
     </select>
 
     <p id="amount">Total Amount: ₹0</p>
-    <button type="<button id="payBtn">Pay Now</button>
-
+    <button type="submit">Pay & Confirm</button>
   </form>
 </section>
 
@@ -114,7 +111,7 @@
 
     const options = {
       prefill: { name: 'Guest' },
-      key: '"rzp_test_RrTJPL3RX9Mxbi"',
+      key: "rzp_test_RrTJPL3RX9Mxbi",
       amount: amount * 100,
       currency: 'INR',
       name: 'Carnival Eventer',
@@ -138,46 +135,6 @@
     new Razorpay(options).open();
   });
 </script>
-<script>
-document.getElementById("payBtn").onclick = async function () {
-  const passType = document.getElementById("passType").value;
-  if (!passType) {
-    alert("Select pass type");
-    return;
-  }
-
-  const amount = Number(passType);
-
-  // Create order from backend
-  const res = await fetch("http://localhost:5000/create-order", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount })
-  });
-
-  const order = await res.json();
-
-  const options = {
-  key: "rzp_test_RrTJPL3RX9Mxbi",
-  amount: order.amount,
-  currency: "INR",
-  name: "Carnival Eventer",
-  description: "New Year Party Pass",
-  order_id: order.id,
-  handler: function (response) {
-    alert(
-      "Payment Successful!\nPayment ID: " +
-      response.razorpay_payment_id
-    );
-  }
-};
-
-
-  const rzp = new Razorpay(options);
-  rzp.open();
-};
-</script>
-
 
 </body>
 </html>
