@@ -82,20 +82,25 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-  const passType = document.getElementById('passType');
-  const amountText = document.getElementById('amount');
-  const adminTable = document.getElementById('adminTable');
-  const adminLogin = document.getElementById('adminLogin');
-  const adminArea = document.getElementById('adminArea');
+  <script>
+const adminLoginBtn = document.getElementById('loginBtn');
+const adminPassInput = document.getElementById('adminPass');
+const adminLoginDiv = document.getElementById('adminLogin');
+const adminAreaDiv = document.getElementById('adminArea');
 
-  document.getElementById('loginBtn').onclick = () => {
-    if(document.getElementById('adminPass').(pass === 'carnival@2025')
-{
-      adminLogin.style.display = 'none';
-      adminArea.style.display = 'block';
-    } else {
-      alert('Wrong password');
-    }
+adminLoginBtn.addEventListener('click', function() {
+  const pass = adminPassInput.value.trim(); // trim extra spaces
+
+  // TEMPORARY TEST PASSWORD
+  if(pass === '1234') {
+    adminLoginDiv.style.display = 'none';
+    adminAreaDiv.style.display = 'block';
+  } else {
+    alert('Wrong password. Use 1234 for testing.');
+  }
+});
+</script>
+
   };
 
   passType.addEventListener('change', () => {
@@ -139,5 +144,6 @@
 
 </body>
 </html>
+
 
 
